@@ -10,6 +10,7 @@
   <groupId>org.jbpm</groupId>
   <artifactId>jbpm-shared-services</artifactId>
   <packaging>bundle</packaging>
+  <version>6.0.0.Final-jahia</version>
 
   <name>jBPM :: Shared Services</name>
 

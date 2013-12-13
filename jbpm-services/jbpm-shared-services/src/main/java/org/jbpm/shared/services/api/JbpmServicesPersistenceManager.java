@@ -15,6 +15,7 @@
  */
 package org.jbpm.shared.services.api;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +59,11 @@ public interface JbpmServicesPersistenceManager {
     <T> T find(Class<T> entityClass, Object primaryKey);
 
     void persist(Object entity);
-    
+
+    EntityManager getEm();
+
+    JbpmServicesTransactionManager getTransactionManager();
+
     boolean beginTransaction();
     
     void endTransaction(boolean txOwner);

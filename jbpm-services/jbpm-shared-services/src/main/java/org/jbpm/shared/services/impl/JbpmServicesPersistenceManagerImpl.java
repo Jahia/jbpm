@@ -108,7 +108,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public boolean hasTransactionManager() {
         return this.ttxm != null;
     }
-    
+    public JbpmServicesTransactionManager getTransactionManager() {
+        return ttxm;
+    }
+
     @Override
     public int executeUpdateString(String updateString) {
         boolean txOwner = false;
@@ -324,13 +327,12 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 throw re;
             } finally {
             	if (!ttxm.supportsTXSynchronization() && txOwner) {
-            		noScopeEmLocal.set(null);
-            	}
+                    closeEntityManager();
+                }
             }
         }
     }
-    
-    public void rollBackTransaction(boolean txOwner) { 
+    public void rollBackTransaction(boolean txOwner) {
         if(ttxm != null){
             try { 
                 this.ttxm.rollback(getEm(), txOwner);
@@ -338,8 +340,8 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 logger.error("Unable to rollback transaction (or to mark as 'to rollback')!", re);
             } finally {
             	if (!ttxm.supportsTXSynchronization() && txOwner) {
-            		noScopeEmLocal.set(null);
-            	}
+                    closeEntityManager();
+                }
             }
         }
         
@@ -386,7 +388,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         }
         
         this.em = null;
-        noScopeEmLocal.set(null);
+        closeEntityManager();
         this.ttxm = null;
     }
 
@@ -604,12 +606,20 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 @Override
                 public void afterCompletion(int status) {
                     logger.debug("Cleaning local (no scoped) entity manager on tx completion");
-                    noScopeEmLocal.set(null);
+                    closeEntityManager();
                 }
             });
             holder.setRegistered(true);
         }
-    }    
+    }
+
+    private void closeEntityManager() {
+        LocalEntityMangerHolder holder = noScopeEmLocal.get();
+        if (holder != null) {
+            holder.getEntityManager().close();
+        }
+        noScopeEmLocal.set(null);
+    }
 
     private class LocalEntityMangerHolder {
         private boolean registered;
