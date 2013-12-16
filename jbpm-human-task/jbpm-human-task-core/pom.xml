@@ -9,6 +9,7 @@
   </parent>
   <artifactId>jbpm-human-task-core</artifactId>
   <packaging>bundle</packaging>
+  <version>6.0.0.Final-jahia</version>
 
   <name>jBPM :: Human Task Core</name>
 

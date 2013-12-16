@@ -136,15 +136,15 @@ public class AbstractUserGroupCallbackDecorator {
     			lock.unlock();
     		} else {
     			logger.debug("Unlock on transaction completion {}", Thread.currentThread().getName());
-    			
-    			JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
-    			if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-    	                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-    	                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+
+    			int status = pm.getTransactionManager().getStatus(pm.getEm());
+                if (pm.getTransactionManager().supportsTXSynchronization()
+                        && status != JtaTransactionManager.STATUS_NO_TRANSACTION
+    	                && status != JtaTransactionManager.STATUS_ROLLEDBACK
+    	                && status != JtaTransactionManager.STATUS_COMMITTED) {
 	    			// unlock after transaction was completed
 		    		
-		    		tm.registerTransactionSynchronization(new TransactionSynchronization() {
-						
+		    		pm.getTransactionManager().registerTXSynchronization(new TransactionSynchronization() {
 						@Override
 						public void beforeCompletion() {					
 						}
