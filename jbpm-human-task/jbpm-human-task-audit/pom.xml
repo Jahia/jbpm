@@ -9,7 +9,6 @@
     </parent>
  
     <artifactId>jbpm-human-task-audit</artifactId>
-	<version>6.0.0.Final-jahia</version>
   
     <name>jBPM :: Human Task Audit</name>
   
@@ -114,17 +113,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-bom</artifactId>
-        <type>pom</type>
-        <version>6.0.0.Final</version>
-        <scope>import</scope>
-      </dependency>
-	</dependencies>
-  </dependencyManagement>
-  
 </project>
